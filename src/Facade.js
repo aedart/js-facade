@@ -15,6 +15,14 @@
  */
 
 /**
+ * Build Exception
+ *
+ * Throw this exception whenever a binding could not be built
+ *
+ * @typedef {Error} BuildException
+ */
+
+/**
  * Resolve the registered abstract from the container
  *
  * @function
@@ -25,6 +33,7 @@
  * @returns {object}
  *
  * @throws {BindingException}
+ * @throws {BuildException}
  */
 
 /**
@@ -134,6 +143,7 @@ export default class Facade {
      * @return {Object}
      *
      * @throws {BindingException}
+     * @throws {BuildException}
      */
     resolveFacadeInstance(){
         return this.constructor.ioc.make(this.facadeAccessor);
