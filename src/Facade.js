@@ -62,14 +62,29 @@ const _facadeAccessor = Symbol('facade-accessor');
 const _facadeRoot = Symbol('facade-root');
 
 /**
- * Facade
+ * Resolved instances
  *
+ * @type {Map<string, object>}
+ * @private
+ */
+let _resolvedInstances = new Map();
+
+/**
  * @description Abstract Facade class
  *
  * @author Alin Eugen Deac <aedart@gmail.com>
  */
-export default class Facade {
+class Facade {
 
+    /**
+     * @constructor
+     *
+     * @param {string} accessor
+     *
+     * @return {Proxy}
+     *
+     * @throws {TypeError} Abstract class
+     */
     constructor(accessor){
         if(new.target === Facade){
             throw new TypeError('Cannot create Facade instance, class is abstract');
@@ -79,7 +94,7 @@ export default class Facade {
         this.facadeAccessor = accessor;
 
         // Return facade proxy
-        return new Proxy(this, this.makeFacadeProxy());
+        return new Proxy(this, Facade.makeFacadeProxy());
     }
 
     /**
@@ -113,7 +128,7 @@ export default class Facade {
      */
     get facadeRoot(){
         if(this[_facadeRoot] == undefined){
-            this[_facadeRoot] = this.resolveFacadeInstance();
+            this[_facadeRoot] = this.constructor.resolveFacadeInstance(this.facadeAccessor);
         }
 
         return this[_facadeRoot];
@@ -140,13 +155,30 @@ export default class Facade {
     /**
      * Resolve the facade root, based on the accessor
      *
+     * @param {string} name
+     *
      * @return {Object}
      *
      * @throws {BindingException}
      * @throws {BuildException}
      */
-    resolveFacadeInstance(){
-        return this.constructor.ioc.make(this.facadeAccessor);
+    static resolveFacadeInstance(name){
+        if(_resolvedInstances.has(name)){
+            return _resolvedInstances.get(name);
+        }
+
+        let resolvedInstance = Facade.ioc.make(name);
+
+        _resolvedInstances.set(name, resolvedInstance);
+
+        return resolvedInstance;
+    }
+
+    /**
+     * Clear all resolved instances
+     */
+    static clearResolvedInstances(){
+        _resolvedInstances.clear();
     }
 
     /**
@@ -156,48 +188,38 @@ export default class Facade {
      *
      * @return {object}
      */
-    makeFacadeProxy(){
-
+    static makeFacadeProxy(){
         return {
 
-            // TODO: apply?
-            // apply: function(facade, thisArg, argumentsList) {
-            //     let insteance = facade.facadeRoot;
-            //
-            //     insteance[]
-            // },
-
-            // set : function(facade, property, value, receiver){
-            //     // TODO: what if facade method invoked?
-            //
-            //     let instance = facade.facadeRoot;
-            //
-            //     instance[property].apply()
-            // },
-
-            get: function(facade, property, receiver) {
-                // TODO: what if facade method invoked?
-
-                let instance = facade.facadeRoot;
-
-                if(typeof instance[property] === 'function'){
-                    return (...args) => {
-                        return instance[property].apply(this, args);
-                    }
+            set : function(facade, property, value){
+                // Set eventual property on facade, provided that
+                // it exists in the facade.
+                if (property in facade && property != 'name') {
+                    return facade[property] = value;
                 }
 
-                // TODO: Must be a property then
+                // Set the property on the facade root.
+                let facadeRoot = facade.facadeRoot;
+
+                return facadeRoot[property] = value;
             },
-            //
-            // has: function(facade, prop) {
-            //
-            // },
-            //
-            // ownKeys: function(facade) {
-            //
-            // },
 
+            get: function(facade, property) {
+                // Check if method or property exists in the facade.
+                // If so, then it must be returned;
+                if (property in facade && property != 'name') {
+                    return facade[property];
+                }
 
+                // If the property was not in the facade, then we must attempt
+                // to get it from the facade root.
+                let facadeRoot = facade.facadeRoot;
+
+                // Otherwise, we attempt to just return the property
+                return facadeRoot[property];
+            },
         };
     }
 }
+
+export default Facade;
