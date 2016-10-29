@@ -163,7 +163,7 @@ class Facade {
      * @throws {BuildException}
      */
     static resolveFacadeInstance(name){
-        if(_resolvedInstances.has(name)){
+        if(Facade.hasResolvedInstance(name)){
             return _resolvedInstances.get(name);
         }
 
@@ -172,6 +172,26 @@ class Facade {
         _resolvedInstances.set(name, resolvedInstance);
 
         return resolvedInstance;
+    }
+
+    /**
+     * Check if Facade has a resolved instance
+     *
+     * @param {string} name
+     *
+     * @return {boolean}
+     */
+    static hasResolvedInstance(name){
+        return _resolvedInstances.has(name);
+    }
+
+    /**
+     * Clear a resolved instance from the Facade
+     *
+     * @param {string} name
+     */
+    static clearResolvedInstance(name){
+        _resolvedInstances.delete(name);
     }
 
     /**

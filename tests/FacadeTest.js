@@ -82,7 +82,27 @@ describe('Facade', function(){
 
         //console.log('Resolved Facade Instance for "' + key + '"', result);
 
+        expect(Facade.hasResolvedInstance(key)).toBe(true);
         expect(result).toBe(alpha);
+    });
+
+    it('can clear a resolved instance', function(){
+        class A {}
+
+        let alpha = new A();
+        let key = 'alpha';
+
+        IoC.bind(key, () => {
+            return alpha;
+        });
+
+        // First resolve, then clear it
+        Facade.resolveFacadeInstance(key);
+        Facade.clearResolvedInstance(key);
+
+        //console.log('Resolved Facade Instance for "' + key + '"', result);
+
+        expect(Facade.hasResolvedInstance(key)).toBe(false);
     });
 
     /*****************************************************************
