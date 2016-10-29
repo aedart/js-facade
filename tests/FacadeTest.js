@@ -2,6 +2,8 @@
 
 import Facade from '../src/Facade';
 import Concrete from './helpers/Concrete';
+import ConcreteFacade from './helpers/ConcreteFacade';
+import { identifier } from './helpers/ConcreteFacade';
 import IoC from '@aedart/js-ioc';
 import faker from 'faker';
 
@@ -23,33 +25,11 @@ describe('Facade', function(){
      ****************************************************************/
 
     /**
-     * Abstract identifier
-     *
-     * @type {string}
-     */
-    const concreteIdentifier = '@myConcrete';
-
-    /**
      * Returns a new concrete class
      * @return {Concrete}
      */
     const makeConcreteClass = () => {
         return new Concrete();
-    };
-
-    /**
-     * Returns a concrete facade
-     *
-     * @return {ConcreteFacade}
-     */
-    const makeConcreteFacade = () => {
-        class ConcreteFacade extends Facade {
-            constructor(){
-                super(concreteIdentifier);
-            }
-        }
-
-        return new ConcreteFacade();
     };
 
     /*****************************************************************
@@ -112,65 +92,59 @@ describe('Facade', function(){
     describe('Facade Proxy Handler', function(){
 
         it('can obtain facade root', function(){
-            IoC.singleton(concreteIdentifier, makeConcreteClass);
-            let facade = makeConcreteFacade();
+            IoC.singleton(identifier, makeConcreteClass);
 
-            let fromIoC = IoC.make(concreteIdentifier);
+            let fromIoC = IoC.make(identifier);
 
-            let result = facade.facadeRoot;
+            let result = ConcreteFacade.facadeRoot;
 
             expect(result instanceof Concrete).toBe(true, 'Incorrect proxy');
             expect(result).toBe(fromIoC, 'Incorrect instance');
         });
 
         it('can proxy property', function(){
-            IoC.bind(concreteIdentifier, makeConcreteClass);
-            let facade = makeConcreteFacade();
+            IoC.bind(identifier, makeConcreteClass);
 
             let name = faker.name.findName();
-            facade.name = name;
+            ConcreteFacade.name = name;
 
-            let result = facade.name;
+            let result = ConcreteFacade.name;
 
             expect(result).toBe(name);
         });
 
         it('can proxy dynamic property', function(){
-            IoC.bind(concreteIdentifier, makeConcreteClass);
-            let facade = makeConcreteFacade();
+            IoC.bind(identifier, makeConcreteClass);
 
-            let result = facade.foo;
+            let result = ConcreteFacade.foo;
 
             expect(result).toBe('bar');
         });
 
         it('can proxy method', function(){
-            IoC.bind(concreteIdentifier, makeConcreteClass);
-            let facade = makeConcreteFacade();
+            IoC.bind(identifier, makeConcreteClass);
 
             let name = faker.name.findName();
-            facade.name = name;
+            ConcreteFacade.name = name;
 
-            let result = facade.sayHi();
+            let result = ConcreteFacade.sayHi();
 
             expect(result).toBe('Hi ' + name);
         });
 
         it('can proxy method with args', function(){
-            IoC.bind(concreteIdentifier, makeConcreteClass);
-            let facade = makeConcreteFacade();
+            IoC.bind(identifier, makeConcreteClass);
 
             let name = faker.name.findName();
-            let result = facade.sayHallo(name);
+            let result = ConcreteFacade.sayHallo(name);
 
             expect(result).toBe('Hallo ' + name);
         });
 
         it('can proxy dynamic method', function(){
-            IoC.bind(concreteIdentifier, makeConcreteClass);
-            let facade = makeConcreteFacade();
+            IoC.bind(identifier, makeConcreteClass);
 
-            let result = facade.bar();
+            let result = ConcreteFacade.bar();
 
             expect(result).toBe('foo');
         });
