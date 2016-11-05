@@ -167,7 +167,7 @@ As soon as I receive the pull-request (_and have time for it_), I will review yo
 
 ## Acknowledgement
 
-* [Taylor Otwell](https://github.com/taylorotwell), for creating [Laravel](http://laravel.com) and especially the [Service Container](http://laravel.com/docs/5.1/container), that I'm using daily
+* [Taylor Otwell](https://github.com/taylorotwell), for his [Facade](https://laravel.com/docs/master/facades) implementation
 
 ## Versioning
 
