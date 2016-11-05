@@ -1,7 +1,7 @@
 {
   "name": "@aedart/js-facade",
   "version": "0.1.0",
-  "description": "EXPERIMENT",
+  "description": "Static interface to concrete classes via an IoC Service Container",
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/karma start karma.conf.js"
@@ -11,7 +11,9 @@
     "url": "git+https://github.com/aedart/js-facade.git"
   },
   "keywords": [
-    "facade"
+    "facade",
+    "dependency",
+    "proxy"
   ],
   "author": "Alin Eugen Deac <aedart@gmail.com> (https://github.com/aedart)",
   "license": "BSD-3-Clause",
