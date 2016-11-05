@@ -1,6 +1,6 @@
 {
   "name": "@aedart/js-facade",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Static interface to concrete classes via an IoC Service Container",
   "main": "index.js",
   "scripts": {
