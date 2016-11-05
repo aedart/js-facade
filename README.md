@@ -124,7 +124,8 @@ Whenever you need to use your concrete class, via a facade, you simply just impo
 ```javascript
 'use strict';
 
-import BoxFacade from './src/Facades/BoxFacade'; // Location where you stored your BoxFacade...
+// Import you facade from where you stored it...
+import BoxFacade from './src/Facades/BoxFacade';
 
 // ... somewhere in your application or inside a component ... //
 
